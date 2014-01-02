@@ -11,7 +11,7 @@
 		foreach ($thread as $value) {
 			echo '<td>'.$value["id"].'</td>';
 			echo '<td>'.$value["title"].'</td>';
-			echo '<td>'.$value["user_id"].'</td>';
+			echo '<td>'.$value["username"].'</td>';
 			echo '<td>'.$value["description"].'</td>';
 			echo '<td>'.$value["created"].'</td>';
 		}

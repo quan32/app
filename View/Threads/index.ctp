@@ -10,6 +10,7 @@
 	<th>Title</th>
 	<th>Owner</th>
 	<th>Detail</th>
+	<th>Action</th>
 </tr>
 <?php
 	foreach ($threads as $thread) {
@@ -18,15 +19,24 @@
 			echo '<td>'.$value["id"].'</td>';
 
 			echo '<td>'.$this->Html->link($value['title'],
-			 array('controller' => 'posts',
-			 	'action' => 'index',
+			 array('controller' => 'threads',
+			 	'action' => 'listPost',
 			 	$value['id'])).'</td>';
 
-			echo '<td>'.$value["user_id"].'</td>';
+			echo '<td>'.$value["username"].'</td>';
 
 			echo '<td>';
 			echo $this->Html->link('Detail', 
 				array('action' => 'view', $value["id"]));
+			echo '</td>';
+
+			echo '<td>';
+			echo $this->Html->link('Edit', 
+				array('action' => 'edit', $value["id"]));
+			echo " ";
+			echo $this->Form->postLink('Delete', 
+				array('action' => 'delete', $value["id"]),
+				array('confirm' => 'Are you sure?'));
 			echo '</td>';
 
 		}

@@ -19,12 +19,12 @@ class UsersController extends AppController{
 		$this->set('user', $this->User->read(null, $id));
 	}
 
-	public function add(){
+	public function add($id = null){
 		if($this->request->is('post')){
 			$this->User->create();
 			if($this->User->save($this->request->data)){
 				$this->Session->setFlash(__('The user has been saved'));
-				return $this->redirect(array('action' => 'index'));
+				return $this->redirect(array('controller' => 'threads', 'action'=>'listPost', $id));
 			}
 
 			$this->Session->setFlash(__('The user could no be saved. Please try again'));
@@ -70,10 +70,9 @@ class UsersController extends AppController{
 
 	public function login(){
 		if($this->request->is('post')){
-
-			$result = $this->Auth->login();
 			//var_dump($this->Auth);
-			if($result){
+			if($this->Auth->login()){
+				$this->Session->setFlash('Your are logged in');
 				return $this->redirect($this->Auth->redirect());
 			}
 			else 
@@ -82,6 +81,7 @@ class UsersController extends AppController{
 	}
 
 	public function logout(){
+		$this->Session->setFlash('Good-Bye');
 		return $this->redirect($this->Auth->logout());
 	}
 

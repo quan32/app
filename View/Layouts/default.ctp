@@ -16,8 +16,10 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
+
 $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework');
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -58,4 +60,37 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 	</div>
 	<?php echo $this->element('sql_dump'); ?>
 </body>
-</html>
+</html> 
+
+
+<!-- <html>
+	<head>
+		<?php
+			echo $this->Html->script('jquery-1.10.2.min');
+		?>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				alert('Jquery is succesfully included');
+			});
+		</script>
+	</head>
+	<body>
+		<?php
+			echo $content_for_layout;
+		?>
+	</body>
+
+</html> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
