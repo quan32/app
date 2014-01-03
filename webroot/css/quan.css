@@ -1,0 +1,20 @@
+.message{
+		font-size: 30px;
+		color: red;
+		margin:10px;
+		background-color: yellow;
+		border-radius: 5px;
+	}
+    #content1 {
+      background-color: #FFF;
+      border-radius: 5px;
+    }
+    #content1 .main {
+      padding: 20px;
+    }
+    #content1 .sidebar {
+      padding: 10px;
+    }
+    #content1 p {
+      line-height: 30px;
+    }

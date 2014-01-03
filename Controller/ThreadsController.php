@@ -1,6 +1,6 @@
 <?php
 class ThreadsController extends AppController{
-	public $helpers = array('Html', 'Form', 'Session');
+	public $helpers = array('Html', 'Form', 'Session','Js');
 	public $components = array('Session');
 
 	public function index(){
@@ -12,8 +12,19 @@ class ThreadsController extends AppController{
 			throw new NotFoundException(__('Invalid thread'));
 
 		$this->loadModel('Post');
-		$this->set('posts', $this->Post->findAllByThreadId($id));
+		$posts = $this->Post->findAllByThreadId($id);
+		$user_id = $this->Auth->user('id');
+		//var_dump($user_id);
+		// $post = $this->Post->find('first',
+		// 	array(
+		// 		'conditions' => array('Post.thread_id' => $id),
+		// 		'order' => array('Post.modified' => 'desc')
+		// 		));
+		//var_dump($post['Post']['modified']);
+		// $this->Session->write('time', $post['Post']['modified']);
+		$this->set('posts', $posts);
 		$this->set('thread_id',$id);
+		$this->set('user_id', $user_id);
 
 		if($this->request->is('post')){
 			$user_id = $this->Auth->user('id');
@@ -27,7 +38,7 @@ class ThreadsController extends AppController{
 
 			$this->Post->create();
 			if($this->Post->save($this->request->data)){
-				$this->Session->setFlash(__('Your post has been saved.'));
+				// $this->Session->setFlash(__('Your post has been saved.'));
 				return $this->redirect(array('controller'=>'threads', 'action'=>'listPost', $id));
 			}
 				$this->Session->setFlash(__('Unable to add your post'));
@@ -38,15 +49,44 @@ class ThreadsController extends AppController{
 		if($id==null)
 			throw new NotFoundException(__('Invalid thread'));
 
+		// $time = $this->Session->read('time');
+		$user_id = $this->Auth->user('id');
+		$this->layout='ajax';
 		$this->loadModel('Post');
-		$posts = $this->Post->findAllByThreadId($id);
-		echo json_encode($posts);
+
+		// $post = $this->Post->find('first',
+		// 	array(
+		// 		'conditions' => array('Post.thread_id' => $id),
+		// 		'order' => array('Post.modified' => 'desc')
+		// 		));
+		// $posts = $this->Post->find('all', 
+		// 	array('conditions' => array(
+		// 		'Post.thread_id' => $id,
+		// 		'Post.modified' => $time )));
+
+		// $post = $this->Post->find('first',
+		// 	array(
+		// 		'conditions' => array('Post.thread_id' => $id),
+		// 		'order' => array('Post.modified' => 'desc')
+		// 		));
+		//var_dump($post['Post']['modified']);
+		// var_dump($posts);
+		// $this->Session->write('time', $post['Post']['modified']);
+		// if($posts)
+		// 	$this->set('posts', $posts);
+		// else
+		// 	$this->set('posts', null);
+		$posts = $this->Post->findAllByThreadId($id);	
+		$this->set('posts', $posts);
+		$this->set('user_id',$user_id);
+
 	}
 
 	public function view($id = null){
 		if($id==null)
 			throw new NotFoundException(__('Invalid thread'));
 
+		$this->layout= 'default1';
 		$thread = $this->Thread->findById($id);
 		if(!$thread)
 			throw new NotFoundException(__('Invalid thread'));
@@ -54,6 +94,7 @@ class ThreadsController extends AppController{
 	}
 
 	public function add(){
+		$this->layout= 'default1';
 		if($this->request->is('post')){
 			$user_id=$this->Auth->user('id');
 			$this->loadModel('User');
@@ -76,6 +117,7 @@ class ThreadsController extends AppController{
 		if(!$id)
 			throw new NotFoundException(__('Invalid thread'));
 
+		$this->layout= 'default1';
 		$thread = $this->Thread->findById($id);
 		if(!$thread)
 			throw new NotFoundException(__('Invalid thread'));
@@ -108,7 +150,7 @@ class ThreadsController extends AppController{
 		//All registered users can add posts
 
 		if($this->action === 'index' || $this->action === 'add' || 
-			$this->action === 'view' || $this->action === 'listPost'){
+			$this->action === 'view' || $this->action === 'listPost' || $this->action === 'listPost1'){
 			return true;
 		}
 

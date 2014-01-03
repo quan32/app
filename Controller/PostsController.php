@@ -10,6 +10,7 @@ class PostsController extends AppController{
 		if(!$id)
 			throw new NotFoundException(__('Invalid post'));
 
+		//$this->layout='default1';
 		$post = $this->Post->findById($id);
 		if(!$post)
 			throw new NotFoundException(__('Invalid post'));
@@ -41,24 +42,31 @@ class PostsController extends AppController{
 		if($id == null)
 			throw new NotFoundException(__('Invalid post'));
 
+		$this->layout='default1';
 		$post = $this->Post->findById($id);
 		$thread_id = $post['Post']['thread_id'];
 
-		if(!$post)
-			throw new NotFoundException(__('Invalid post'));
-
-		if($this->request->is(array('post', 'put'))){
-			
-			if($this->Post->save($this->request->data)){
-				$this->Session->setFlash(__('Your post has been updated'));
-				return $this->redirect(array('controller'=>'threads','action' => 'listPost', $thread_id));
-			}
-			else
-				$this->Session->setFlash(__('Unable to update your post'));
+		if($post['Post']['state'] == 0){
+			$this->Session->setFlash(__('Your can not edit this message'));
+			return $this->redirect(array('controller'=>'threads','action' => 'listPost', $thread_id));
 		}
-		
-		if(!$this->request->data){
-			$this->request->data=$post;
+			
+		else{
+			if(!$post)
+				throw new NotFoundException(__('Invalid post'));
+
+			if($this->request->is(array('post', 'put'))){
+				
+				if($this->Post->save($this->request->data)){
+					$this->Session->setFlash(__('Your post has been updated'));
+					return $this->redirect(array('controller'=>'threads','action' => 'listPost', $thread_id));
+				}
+					
+			}
+			
+			if(!$this->request->data){
+				$this->request->data=$post;
+			}
 		}
 			
 	}
@@ -71,13 +79,18 @@ class PostsController extends AppController{
 			throw new MethodNotAllowedException();
 
 		$post = $this->Post->findById($id);
-		$thread_id = $post['Post']['thread_id'];
-		//var_dump($thread_id);die();
+		$thread_id=$post['Post']['thread_id'];
+		if($post['Post']['state'] == 0)
+			$this->Session->setFlash(__('You can not delete this message.'));
+		else{
+			$post['Post']['body']='This message has been deleted';
+			$post['Post']['state']=0;
 
-		if($this->Post->delete($id)){
-			$this->Session->setFlash(__('The post has been deleted.'));
-			return $this->redirect(array('controller'=>'threads','action' => 'listPost', $thread_id));
+			if($this->Post->save($post)){
+				$this->Session->setFlash(__('The post has been deleted.'));
 		}
+		}
+		return $this->redirect(array('controller'=>'threads','action' => 'listPost', $thread_id));
 			
 	}
 
@@ -85,7 +98,7 @@ class PostsController extends AppController{
 		//All registered users can add posts
 
 		if($this->action === 'index' || $this->action === 'add' || 
-			$this->action === 'view' || $this->action === 'delete'){
+			$this->action === 'view'){
 			return true;
 		}
 

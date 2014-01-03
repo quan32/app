@@ -69,6 +69,7 @@ class UsersController extends AppController{
 	}
 
 	public function login(){
+		$this->layout='default1';
 		if($this->request->is('post')){
 			//var_dump($this->Auth);
 			if($this->Auth->login()){
